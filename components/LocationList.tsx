@@ -12,9 +12,8 @@ interface Props {
 }
 
 interface LocationScore {
-  locationId: string
-  score: number
-  recommendation: string
+  total_score: number
+  viewing_recommendation: 'excellent' | 'good' | 'moderate' | 'poor' | 'not-visible'
 }
 
 export function LocationList({ locations, currentUserId, onLocationClick }: Props) {
@@ -134,8 +133,6 @@ export function LocationList({ locations, currentUserId, onLocationClick }: Prop
     return 'Very Poor'
   }
 
-  const filteredLocations = locations.filter((loc) => selectedTiers.includes(loc.tier))
-
   return (
     <div className="space-y-4">
       <div>
@@ -186,11 +183,11 @@ export function LocationList({ locations, currentUserId, onLocationClick }: Prop
                     <p className="text-sm text-gray-400 mt-1">{location.country}</p>
                     {scores[location.id] && (
                       <div className="mt-2 flex items-center gap-2">
-                        <span className={`text-xs font-semibold ${getStatusColor(scores[location.id].score)}`}>
-                          Aurora: {getStatusText(scores[location.id].score)}
+                        <span className={`text-xs font-semibold ${getStatusColor(scores[location.id].total_score)}`}>
+                          Aurora: {getStatusText(scores[location.id].total_score)}
                         </span>
                         <span className="text-xs text-gray-500">
-                          {Math.round(scores[location.id].score)}/100
+                          {scores[location.id].total_score}/100
                         </span>
                       </div>
                     )}

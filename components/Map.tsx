@@ -14,9 +14,8 @@ interface MapComponentProps {
 }
 
 interface LocationScore {
-  locationId: string
-  score: number
-  recommendation: string
+  total_score: number
+  viewing_recommendation: 'excellent' | 'good' | 'moderate' | 'poor' | 'not-visible'
 }
 
 export default function MapComponent({
@@ -228,11 +227,11 @@ export default function MapComponent({
               <div className="flex justify-between items-center mb-3 pb-3 border-b border-gray-700">
                 <span className="text-gray-400">Aurora Status:</span>
                 <div className="flex items-center gap-2">
-                  <span className={`font-semibold ${getStatusColor(scores[selectedLocation.id].score)}`}>
-                    {getStatusText(scores[selectedLocation.id].score)}
+                  <span className={`font-semibold ${getStatusColor(scores[selectedLocation.id].total_score)}`}>
+                    {getStatusText(scores[selectedLocation.id].total_score)}
                   </span>
                   <span className="text-xs text-gray-500">
-                    {Math.round(scores[selectedLocation.id].score)}/100
+                    {scores[selectedLocation.id].total_score}/100
                   </span>
                 </div>
               </div>
