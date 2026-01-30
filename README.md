@@ -1,36 +1,152 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Araura - Aurora Viewing Location Finder
+
+A Next.js web application that helps users find the best locations to view Northern Lights (Aurora Borealis) by analyzing real-time data from multiple sources:
+
+- **Aurora Activity**: NOAA Space Weather Prediction Center Kp index
+- **Cloud Coverage**: Open-Meteo weather data
+- **Air Quality**: OpenAQ global air quality index
+- **Light Pollution**: Light pollution map overlay
+- **Accessibility**: Curated locations with infrastructure
+
+## Features
+
+- 🗺️ **Interactive Dark Map**: Leaflet.js with CartoDB Dark Matter theme and light pollution overlay
+- 🌌 **30 Curated Northern Locations**: Accessible sites across Alaska, Canada, Iceland, Scandinavia
+- 📊 **Real-Time Aurora Scoring**: Weighted algorithm combining all 5 data sources
+- 👤 **User Authentication**: Save favorite locations with Supabase Auth
+- 📧 **Smart Alerts**: Email notifications only when viewing conditions are actually good (Kp 4+, <50% clouds)
+- 💯 **100% Free Stack**: No API costs for development and early growth
+
+## Tech Stack
+
+### Frontend
+
+- **Next.js 14** (App Router) with TypeScript
+- **Tailwind CSS** for styling
+- **Leaflet.js** + **react-leaflet** for interactive maps
+- **CartoDB Dark Matter** tiles (free, night-friendly)
+
+### Backend
+
+- **Supabase** (PostgreSQL + Authentication)
+- **Next.js API Routes** for serverless functions
+
+### Data Sources (All Free)
+
+- **NOAA SWPC**: Aurora Kp index and forecasts
+- **Open-Meteo**: Cloud coverage and weather data
+- **OpenAQ**: Global air quality index
+- **Light Pollution Map**: Satellite-based light pollution overlay
+
+### Email
+
+- **Resend**: Email notifications (3,000/month free)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+ and npm
+- A Supabase account (free tier)
+- A Resend account (optional, for email alerts)
+
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Set Up Supabase
+
+1. Create a new project at [supabase.com](https://supabase.com)
+2. Go to Project Settings > API to get your keys
+3. Go to SQL Editor and run the contents of `supabase-setup.sql`
+4. Run the seed script `seed-locations.sql` to populate locations
+
+### 3. Configure Environment Variables
+
+Copy `.env.example` to `.env.local` and fill in your credentials:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your-project-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+RESEND_API_KEY=your-resend-api-key
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+### 4. Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+araura/
+├── app/
+│   ├── api/
+│   │   ├── aurora/route.ts       # NOAA Kp index API
+│   │   ├── weather/route.ts      # Open-Meteo weather API
+│   │   └── air-quality/route.ts  # OpenAQ air quality API
+│   ├── layout.tsx
+│   └── page.tsx                  # Main map view
+├── components/
+│   └── Map.tsx                   # Leaflet map component
+├── lib/
+│   ├── supabase/                 # Supabase clients
+│   └── scoring.ts                # Aurora scoring algorithm
+├── types/
+│   └── index.ts                  # TypeScript types
+├── supabase-setup.sql            # Database schema
+└── seed-locations.sql            # 30 curated locations
+```
 
-## Learn More
+## Aurora Scoring Algorithm
 
-To learn more about Next.js, take a look at the following resources:
+The app uses a weighted scoring system optimized for Northern hemisphere viewing:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Factor              | Weight | Description                     |
+| ------------------- | ------ | ------------------------------- |
+| **Latitude**        | 25%    | 65-72°N = optimal (aurora oval) |
+| **Kp Index**        | 25%    | Aurora activity level (0-9)     |
+| **Clouds**          | 20%    | Clear skies critical            |
+| **Light Pollution** | 15%    | Bortle scale darkness           |
+| **Moon Phase**      | 10%    | New moon = best                 |
+| **Air Quality**     | 5%     | Visibility/clarity              |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Score Ranges:**
 
-## Deploy on Vercel
+- **80-100**: Excellent viewing
+- **65-79**: Good viewing
+- **50-64**: Moderate viewing
+- **35-49**: Poor viewing
+- **0-34**: Not visible
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Email Alerts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Alerts are only sent when conditions warrant it:
+
+- Score ≥ 65 (good or excellent)
+- Kp index ≥ 4 (moderate to strong activity)
+- Cloud coverage < 50%
+
+This prevents spam and ensures users only get notified when there's a real chance to see aurora.
+
+## Deployment
+
+### Vercel (Recommended)
+
+1. Push to GitHub
+2. Import project to Vercel
+3. Add environment variables in Vercel dashboard
+4. Deploy
+
+The free tier includes 100GB bandwidth/month and serverless functions.
+
+## License
+
+MIT

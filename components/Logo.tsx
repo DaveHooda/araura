@@ -1,0 +1,44 @@
+export function Logo() {
+  return (
+    <svg
+      width="64"
+      height="64"
+      viewBox="0 0 64 64"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="mr-4"
+    >
+      {/* Background circle */}
+      <circle cx="32" cy="32" r="30" stroke="#10b981" strokeWidth="2" opacity="0.3" />
+      
+      {/* Aurora waves */}
+      <path
+        d="M 8 32 Q 16 24 24 32 T 40 32 T 56 32"
+        stroke="#10b981"
+        strokeWidth="3"
+        fill="none"
+        strokeLinecap="round"
+      />
+      <path
+        d="M 8 38 Q 16 30 24 38 T 40 38 T 56 38"
+        stroke="#34d399"
+        strokeWidth="2.5"
+        fill="none"
+        strokeLinecap="round"
+        opacity="0.8"
+      />
+      <path
+        d="M 8 44 Q 16 36 24 44 T 40 44 T 56 44"
+        stroke="#6ee7b7"
+        strokeWidth="2"
+        fill="none"
+        strokeLinecap="round"
+        opacity="0.6"
+      />
+      
+      {/* North star */}
+      <circle cx="32" cy="16" r="2.5" fill="#fbbf24" />
+      <circle cx="32" cy="16" r="4" stroke="#fbbf24" strokeWidth="1" fill="none" opacity="0.5" />
+    </svg>
+  )
+}
