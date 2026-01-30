@@ -133,6 +133,8 @@ export function LocationList({ locations, currentUserId, onLocationClick }: Prop
     return 'Very Poor'
   }
 
+  const filteredLocations = locations.filter((loc) => selectedTiers.includes(loc.tier))
+
   return (
     <div className="space-y-4">
       <div>
